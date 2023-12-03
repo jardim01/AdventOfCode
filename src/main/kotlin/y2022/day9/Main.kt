@@ -1,78 +1,74 @@
 package y2022.day9
 
 import resourceReader
+import y2022.day9.domain.Coordinate
+import y2022.day9.domain.Direction
+import y2022.day9.domain.Move
+import y2022.day9.domain.Node
 import kotlin.math.absoluteValue
 
-enum class Direction(val c: Char) {
-    UP('U'), DOWN('D'), LEFT('L'), RIGHT('R');
-
-    companion object {
-        fun fromChar(c: Char) = Direction.values().firstOrNull { it.c == c } ?: throw IllegalArgumentException()
-    }
-}
-
-data class Move(val direction: Direction, val distance: Int) {
-    init {
-        require(distance > 0)
-    }
-
-    companion object {
-        fun fromString(string: String): Move {
-            println(string)
-            val direction = Direction.fromChar(string[0])
-            val distance = string.substring(2).toInt()
-            return Move(direction, distance)
-        }
-    }
-}
-
-data class Coordinate(val x: Int, val y: Int) {
-    override fun toString() = "($x, $y)"
-}
+private const val ROPE_SIZE = 10
 
 fun main() {
     val reader = "2022/9/input.txt".resourceReader()
 
-    val moves = reader.readLines().map { Move.fromString(it) }
+    val moves = reader.readLines().map(Move::fromString)
 
-    var headCoord = Coordinate(0, 0)
-    var tailCoord = headCoord.copy()
-    val tailCoords = mutableSetOf(tailCoord.copy())
+    val head = buildRope(ROPE_SIZE)
+    val tail = head.tail()
+    val tailCoords = mutableSetOf(tail.value)
 
     moves.forEach { move ->
         repeat(move.distance) {
-            val headNewX = when (move.direction) {
-                Direction.UP -> headCoord.x
-                Direction.DOWN -> headCoord.x
-                Direction.LEFT -> headCoord.x - 1
-                Direction.RIGHT -> headCoord.x + 1
-            }
-            val headNewY = when (move.direction) {
-                Direction.UP -> headCoord.y - 1
-                Direction.DOWN -> headCoord.y + 1
-                Direction.LEFT -> headCoord.y
-                Direction.RIGHT -> headCoord.y
-            }
-            headCoord = Coordinate(x = headNewX, y = headNewY)
+            var curr = head
+            while (true) {
+                if (curr == head) {
+                    val newCoord = when (move.direction) {
+                        Direction.UP -> curr.value.copy(y = curr.value.y - 1)
+                        Direction.DOWN -> curr.value.copy(y = curr.value.y + 1)
+                        Direction.LEFT -> curr.value.copy(x = curr.value.x - 1)
+                        Direction.RIGHT -> curr.value.copy(x = curr.value.x + 1)
+                    }
+                    curr.value = newCoord
+                } else {
+                    val prev = curr.previous!!
+                    val hDist = prev.value.x - curr.value.x
+                    val vDist = prev.value.y - curr.value.y
 
-            val horizontalDistance = headCoord.x - tailCoord.x
-            val verticalDistance = headCoord.y - tailCoord.y
+                    var tailNewX = curr.value.x
+                    var tailNewY = curr.value.y
+                    if (hDist.absoluteValue == 2) {
+                        // plus or minus 1
+                        tailNewX += (hDist / hDist.absoluteValue)
+                        if (vDist != 0) tailNewY += (vDist / vDist.absoluteValue)
+                    } else if (vDist.absoluteValue == 2) {
+                        // plus or minus 1
+                        tailNewY += (vDist / vDist.absoluteValue)
+                        if (hDist != 0) tailNewX += (hDist / hDist.absoluteValue)
+                    }
+                    curr.value = Coordinate(x = tailNewX, y = tailNewY)
+                    if (curr == tail) {
+                        // save coord
+                        tailCoords.add(curr.value)
+                    }
+                }
 
-            var tailNewX = tailCoord.x
-            var tailNewY = tailCoord.y
-            if (horizontalDistance.absoluteValue == 2) {
-                // plus or minus 1
-                tailNewX += (horizontalDistance / horizontalDistance.absoluteValue)
-                if (verticalDistance != 0) tailNewY += (verticalDistance / verticalDistance.absoluteValue)
-            } else if (verticalDistance.absoluteValue == 2) {
-                // plus or minus 1
-                tailNewY += (verticalDistance / verticalDistance.absoluteValue)
-                if (horizontalDistance != 0) tailNewX += (horizontalDistance / horizontalDistance.absoluteValue)
+                curr = curr.next ?: break
             }
-            tailCoord = Coordinate(x = tailNewX, y = tailNewY)
-            tailCoords.add(tailCoord)
         }
     }
 
     println(tailCoords.size)
+}
+
+fun buildRope(size: Int): Node<Coordinate> {
+    val head = Node(value = Coordinate(0, 0), previous = null, next = null)
+    var curr = head
+    repeat(size - 1) {
+        val newNode = curr.copy()
+        curr.next = newNode
+        newNode.previous = curr
+        curr = newNode
+    }
+    return head
 }
