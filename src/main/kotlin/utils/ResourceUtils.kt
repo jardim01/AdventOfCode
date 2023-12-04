@@ -5,7 +5,7 @@ import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.net.URL
 
-fun getResource(name: String): URL? = object {}.javaClass.getResource(name)
+fun getResource(name: String): URL? = Thread.currentThread().contextClassLoader.getResource(name)
 
 fun resourceBufferedReader(name: String): BufferedReader {
     val file = getResource(name)?.file ?: throw FileNotFoundException()
