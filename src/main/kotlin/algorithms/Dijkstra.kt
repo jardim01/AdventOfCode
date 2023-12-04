@@ -1,4 +1,4 @@
-package y2022.day12
+package algorithms
 
 import y2022.day12.domain.Graph
 

@@ -1,8 +1,7 @@
 package y2022.day1
 
-import resourceReader
-
-data class Elf(val calories: Int)
+import utils.resourceReader
+import y2022.day1.domain.Elf
 
 fun main() {
     val reader = "2022/1/input.txt".resourceReader()

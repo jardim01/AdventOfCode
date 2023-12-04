@@ -1,6 +1,7 @@
 package y2023.day1
 
-import resourceReader
+import utils.resourceReader
+import y2023.day1.domain.WordDigits
 
 fun main() {
     part1()
@@ -16,18 +17,6 @@ fun part1() {
         sum += combineDigits(first, last)
     }
     println("Sum: $sum")
-}
-
-enum class WordDigits(val word: String, val digit: Int) {
-    ONE("one", 1),
-    TWO("two", 2),
-    THREE("three", 3),
-    FOUR("four", 4),
-    FIVE("five", 5),
-    SIX("six", 6),
-    SEVEN("seven", 7),
-    EIGHT("eight", 8),
-    NINE("nine", 9),
 }
 
 fun part2() {
@@ -67,6 +56,6 @@ fun part2() {
     println("Sum: $sum")
 }
 
-fun combineDigits(first: Int, last: Int): Int {
+private fun combineDigits(first: Int, last: Int): Int {
     return first * 10 + last
 }

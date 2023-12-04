@@ -1,25 +1,9 @@
 package y2022.day3
 
-import resourceReader
-
-data class ItemType(val type: Char) {
-    val priority = if (type.isLowerCase()) {
-        type.code - 'a'.code + 1
-    } else {
-        type.code - 'A'.code + 27
-    }
-}
-
-data class Rucksack(val items: List<ItemType>) {
-    private val compartment1 = items.take(items.size / 2)
-    private val compartment2 = items.takeLast(items.size / 2)
-
-    val itemTypeInBothCompartments = compartment1.intersect(compartment2.toSet()).first()
-}
-
-fun <T> intersect(vararg sets: Set<T>): Set<T> {
-    return sets.reduce { acc, set -> acc.intersect(set) }
-}
+import utils.intersect
+import utils.resourceReader
+import y2022.day3.domain.ItemType
+import y2022.day3.domain.Rucksack
 
 fun main() {
     val reader = "2022/3/input.txt".resourceReader()

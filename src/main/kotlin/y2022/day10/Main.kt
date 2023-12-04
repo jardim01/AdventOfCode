@@ -1,6 +1,6 @@
 package y2022.day10
 
-import resourceReader
+import utils.resourceReader
 import y2022.day10.domain.CPU
 import y2022.day10.domain.CRT
 import y2022.day10.domain.Clock

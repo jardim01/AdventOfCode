@@ -1,87 +1,12 @@
 package y2022.day7
 
-import resourceReader
-
-data class Command(val name: String, val args: List<String>) {
-    companion object {
-        private const val COMMAND_PREFIX = "$ "
-
-        fun parse(str: String): Command {
-            val argsIdx = str.indexOf(" ", startIndex = 2)
-                .let {
-                    if (it == -1) str.length
-                    else it
-                }
-
-            val name = str.substring(COMMAND_PREFIX.length, argsIdx)
-            val args =
-                if (argsIdx == str.length) emptyList()
-                else str.substring(argsIdx + 1).split(" ")
-            return Command(name, args)
-        }
-    }
-}
-
-class Path(path: String) {
-    val pathname = "$path/"
-        .replace('\\', '/')
-        .replace(Regex("/+"), "/")
-
-    val parent
-        get() = Path(pathname.substring(0, pathname.trimEnd('/').lastIndexOf('/')))
-
-    override fun toString() = "Pathname(pathname=$pathname)"
-
-    override fun equals(other: Any?): Boolean {
-        return if (other !is Path) false
-        else other.pathname == this.pathname
-    }
-
-    override fun hashCode() = pathname.hashCode()
-}
-
-fun Path(base: Path, vararg subdirectories: String): Path {
-    return Path("${base.pathname}${subdirectories.joinToString(separator = "/")}")
-}
-
-val String.isCommand get() = this.startsWith("$")
-
-val Command.isCd get() = this.name == "cd"
-val Command.isLs get() = this.name == "ls"
-
-data class File(val size: Int, val name: String)
-
-data class Directory(
-    val name: String,
-    val parent: Directory?,
-    val subdirectories: MutableList<Directory> = mutableListOf(),
-    val files: MutableList<File> = mutableListOf()
-) {
-    val size: Int
-        get() = subdirectories.sumOf { it.size } + files.sumOf { it.size }
-
-    fun tree(): String {
-        var str = name
-        if (subdirectories.isNotEmpty()) str += "\n"
-        subdirectories.forEach {
-            str += it.tree().prependIndent("\t") + "\n"
-        }
-        str = str.trim()
-        if (files.isNotEmpty()) str += "\n"
-        files.forEach {
-            str += it.toString().prependIndent("\t") + "\n"
-        }
-        str = str.trim()
-        return str
-    }
-}
-
-fun Directory.recurse(block: (Directory) -> Unit) {
-    block(this)
-    this.subdirectories.forEach {
-        it.recurse(block)
-    }
-}
+import utils.resourceReader
+import y2022.day7.domain.Command
+import y2022.day7.domain.Directory
+import y2022.day7.domain.File
+import y2022.day7.domain.isCd
+import y2022.day7.domain.isCommand
+import y2022.day7.domain.recurse
 
 private const val FILESYSTEM_SIZE = 70000000
 private const val UPDATE_SIZE = 30000000

@@ -1,10 +1,10 @@
 package y2022.day9
 
-import resourceReader
+import domain.Node
+import utils.resourceReader
 import y2022.day9.domain.Coordinate
 import y2022.day9.domain.Direction
 import y2022.day9.domain.Move
-import y2022.day9.domain.Node
 import kotlin.math.absoluteValue
 
 private const val ROPE_SIZE = 10
@@ -61,7 +61,7 @@ fun main() {
     println(tailCoords.size)
 }
 
-fun buildRope(size: Int): Node<Coordinate> {
+private fun buildRope(size: Int): Node<Coordinate> {
     val head = Node(value = Coordinate(0, 0), previous = null, next = null)
     var curr = head
     repeat(size - 1) {

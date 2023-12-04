@@ -1,6 +1,6 @@
 package y2022.day6
 
-import resourceReader
+import utils.resourceReader
 
 const val PACKET_MARKER_SIZE = 4
 const val MESSAGE_MARKER_SIZE = 14

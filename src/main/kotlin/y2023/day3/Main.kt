@@ -1,6 +1,6 @@
 package y2023.day3
 
-import resourceReader
+import utils.resourceReader
 import y2023.day3.domain.Dot
 import y2023.day3.domain.SchematicNumber
 import y2023.day3.domain.Slot
@@ -42,7 +42,7 @@ fun main() {
     println("Gear ratio sum: $gearRatioSum")
 }
 
-fun buildSchematic(reader: BufferedReader): Schematic {
+private fun buildSchematic(reader: BufferedReader): Schematic {
     val schematic: Schematic = reader.lines().toList().mapIndexed { y, line ->
         var partNumber = SchematicNumber(0)
         line.mapIndexed { x, c ->
@@ -61,7 +61,7 @@ fun buildSchematic(reader: BufferedReader): Schematic {
     return schematic
 }
 
-fun Schematic.getAdjacentSlots(x: Int, y: Int): List<Slot<SlotItem>> {
+private fun Schematic.getAdjacentSlots(x: Int, y: Int): List<Slot<SlotItem>> {
     val adjacentSlots = mutableListOf<Slot<SlotItem>>()
     for (deltaY in -1..1) {
         for (deltaX in -1..1) {

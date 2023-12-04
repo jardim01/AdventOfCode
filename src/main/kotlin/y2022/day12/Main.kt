@@ -1,6 +1,8 @@
 package y2022.day12
 
-import resourceReader
+import algorithms.dijkstra
+import algorithms.shortestPath
+import utils.resourceReader
 import y2022.day12.domain.Graph
 import y2022.day12.domain.Square
 import java.util.concurrent.CopyOnWriteArrayList

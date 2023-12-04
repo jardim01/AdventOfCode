@@ -1,4 +1,4 @@
-package y2022.day9.domain
+package domain
 
 data class Node<T>(var value: T, var previous: Node<T>?, var next: Node<T>?) {
     fun tail(): Node<T> {
